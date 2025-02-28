@@ -1,4 +1,4 @@
-package com.binit.zenwalls.data.dto
+package com.binit.zenwalls.data.remote.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
