@@ -11,6 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.binit.zenwalls.ui.components.TopBar
+import com.binit.zenwalls.ui.navigation.NavGraph
 import com.binit.zenwalls.ui.theme.ZenWallsTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +22,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ZenWallsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navHostController = rememberNavController()
+
+                Scaffold(
+                    topBar = {
+                        TopBar()
+                    }
+                ) {
+                    NavGraph(navHostController, modifier = Modifier.padding(it))
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ZenWallsTheme {
-        Greeting("Android")
-    }
-}
