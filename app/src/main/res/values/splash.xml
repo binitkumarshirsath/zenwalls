@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.ZenWalls.MySplash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenBackground">@color/bg_primary</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/app_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.ZenWalls</item>
         <item name="android:windowNoTitle">true</item>
