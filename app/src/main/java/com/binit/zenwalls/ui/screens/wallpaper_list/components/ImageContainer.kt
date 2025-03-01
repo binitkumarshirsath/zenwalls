@@ -1,5 +1,6 @@
 package com.binit.zenwalls.ui.screens.wallpaper_list.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -16,7 +17,11 @@ import coil3.request.crossfade
 import com.binit.zenwalls.domain.model.UnsplashImage
 
 @Composable
-fun ImageContainer(modifier: Modifier = Modifier, image: UnsplashImage) {
+fun ImageContainer(
+    modifier: Modifier = Modifier,
+    image: UnsplashImage,
+    onImageClick: (imageId: String) -> Unit = {},
+) {
 
     val aspectRatio by remember {
         derivedStateOf { (image.width?.toFloat() ?: 1f) / (image.height?.toFloat() ?: 1f) }
@@ -36,6 +41,9 @@ fun ImageContainer(modifier: Modifier = Modifier, image: UnsplashImage) {
         modifier = Modifier
             .aspectRatio(aspectRatio)
             .padding(1.dp)
+            .clickable {
+                onImageClick.invoke(image.id)
+            }
 
     )
 }

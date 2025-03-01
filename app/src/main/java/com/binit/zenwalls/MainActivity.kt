@@ -21,6 +21,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.compose.rememberNavController
 import com.binit.zenwalls.ui.components.TopBar
 import com.binit.zenwalls.ui.navigation.NavGraph
+import com.binit.zenwalls.ui.navigation.Routes
 import com.binit.zenwalls.ui.theme.ZenWallsTheme
 
 class MainActivity : ComponentActivity() {
@@ -40,24 +41,14 @@ class MainActivity : ComponentActivity() {
                         easing = FastOutSlowInEasing
                     )
                 )
-                Scaffold(
-                    topBar = {
-                        TopBar(
-                            scrollBehavior
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection),
-                ) { paddingValues ->
+
                     NavGraph(
                         navHostController,
                         scrollBehavior,
-                        modifier = Modifier
-                            .padding(paddingValues)
+
 
                     )
-                }
+
             }
         }
     }
