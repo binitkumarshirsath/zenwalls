@@ -19,7 +19,9 @@ class HomeScreenViewModel(
 ):ViewModel(){
 
     var images : List<UnsplashImage> by mutableStateOf(emptyList())
-
+    init {
+        fetchImages()
+    }
     private fun fetchImages(){
         viewModelScope.launch {
             repository.getFeedImages().onSuccess {
