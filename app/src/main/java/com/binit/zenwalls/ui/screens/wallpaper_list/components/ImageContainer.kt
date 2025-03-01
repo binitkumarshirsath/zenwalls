@@ -1,6 +1,7 @@
 package com.binit.zenwalls.ui.screens.wallpaper_list.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -8,6 +9,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -19,6 +21,8 @@ import com.binit.zenwalls.domain.model.UnsplashImage
 @Composable
 fun ImageContainer(
     modifier: Modifier = Modifier,
+    onPreviewImageClick: (image:UnsplashImage) -> Unit,
+    onPreviewImageEnd : ()->Unit,
     image: UnsplashImage,
     onImageClick: (imageId: String) -> Unit = {},
 ) {
@@ -43,6 +47,16 @@ fun ImageContainer(
             .padding(1.dp)
             .clickable {
                 onImageClick.invoke(image.id)
+            }
+            .pointerInput(Unit) {
+                detectDragGesturesAfterLongPress(
+                    onDragStart = {
+                        onPreviewImageClick.invoke(image)
+                    },
+                    onDragEnd = {onPreviewImageEnd.invoke()},
+                    onDragCancel = {onPreviewImageEnd.invoke() },
+                    onDrag = { _, _ -> }
+                )
             }
 
     )

@@ -4,12 +4,15 @@ import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.ui.screens.favourite.FavouriteScreen
 import com.binit.zenwalls.ui.screens.search.SearchScreen
 import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreen
@@ -24,6 +27,9 @@ fun NavGraph(
     scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier
 ) {
+
+
+
     NavHost(navController = navController, startDestination = Routes.HomeScreen) {
         composable<Routes.HomeScreen> {
             HomeScreen(
@@ -46,7 +52,7 @@ fun NavGraph(
             SearchScreen()
         }
 
-        composable<Routes.FavouriteScreen>{
+        composable<Routes.FavouriteScreen> {
             FavouriteScreen()
         }
 
