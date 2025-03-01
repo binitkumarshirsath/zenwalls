@@ -15,6 +15,7 @@ fun UnsplashImageDTO.toUnsplashImage():UnsplashImage{
         photographerProfileLink = user?.links?.html,
         width = width,
         height = height,
+        imageColor = color,
         description = description
     )
 }

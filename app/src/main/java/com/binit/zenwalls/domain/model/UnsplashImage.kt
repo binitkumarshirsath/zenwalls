@@ -5,6 +5,7 @@ data class UnsplashImage(
     val imageUrlSmall: String?,
     val imageUrlRegular: String?,
     val imageUrlRaw: String?,
+    val imageColor:String?,
     val photographerName: String?,
     val photographerUsername: String?,
     val photographerProfileImgUrl: String?,
