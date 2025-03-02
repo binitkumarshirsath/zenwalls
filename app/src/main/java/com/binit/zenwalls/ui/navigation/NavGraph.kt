@@ -30,8 +30,6 @@ fun NavGraph(
     modifier: Modifier = Modifier
 ) {
 
-
-
     NavHost(navController = navController, startDestination = Routes.HomeScreen) {
         composable<Routes.HomeScreen> {
             HomeScreen(
@@ -46,8 +44,6 @@ fun NavGraph(
 
         composable<Routes.WallpaperScreen> {
             val wallpaperScreenViewModel : WallpaperScreenViewModel = koinViewModel()
-            val wallpaperId = wallpaperScreenViewModel.imageId
-            Log.d(TAG, "wallpaperId: $wallpaperId")
             WallpaperScreen(
                 modifier = modifier,
                 onBackClick = {

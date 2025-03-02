@@ -44,7 +44,6 @@ fun ImageContainer(
         contentScale = ContentScale.Fit,
         modifier = Modifier
             .aspectRatio(aspectRatio)
-            .padding(1.dp)
             .clickable {
                 onImageClick.invoke(image.id)
             }

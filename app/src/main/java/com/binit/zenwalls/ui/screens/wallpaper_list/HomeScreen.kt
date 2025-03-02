@@ -36,8 +36,8 @@ fun HomeScreen(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
 
-    var isPreviewVisible = remember { mutableStateOf(false) }
-    var previewImage = remember { mutableStateOf<UnsplashImage?>(null) }
+    val isPreviewVisible = remember { mutableStateOf(false) }
+    val previewImage = remember { mutableStateOf<UnsplashImage?>(null) }
 
     Box(modifier.fillMaxSize(),
         contentAlignment = Alignment.Center) {
