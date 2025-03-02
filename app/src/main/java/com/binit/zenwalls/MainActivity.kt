@@ -1,20 +1,30 @@
 package com.binit.zenwalls
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.compose.rememberNavController
+import com.binit.zenwalls.domain.repository.NetworkConnectivityObserver
+import com.binit.zenwalls.ui.components.NetworkStatusBar
+import com.binit.zenwalls.ui.components.TopBar
 import com.binit.zenwalls.ui.navigation.NavGraph
+import com.binit.zenwalls.ui.navigation.Routes
 import com.binit.zenwalls.ui.theme.ZenWallsTheme
+import org.koin.android.ext.android.inject
+
+private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -22,26 +32,45 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+
         setContent {
             ZenWallsTheme {
-                val context = LocalContext.current
-                val currentTheme = context.theme.obtainStyledAttributes(intArrayOf(android.R.attr.windowBackground))
-                Log.d("ThemeChecker", "Current theme is applied")
-                currentTheme.recycle()
                 val navHostController = rememberNavController()
+
                 val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(
                     state = rememberTopAppBarState(),
                     canScroll = { true },
-                    snapAnimationSpec = tween(
-                        durationMillis = 2000,
-                        delayMillis = 1000,
-                        easing = FastOutSlowInEasing
+                )
+
+                val networkConnectivityObserver: NetworkConnectivityObserver by inject()
+                val networkStatus by networkConnectivityObserver.networkStatus.collectAsState()
+
+
+
+                Scaffold(
+                    topBar = {
+                        TopBar(
+                            scrollBehavior,
+                            onSearchClick = {
+                                navHostController.navigate(Routes.SearchScreen)
+                            }
+                        )
+                    },
+                    bottomBar = {
+                        NetworkStatusBar(
+                            modifier = Modifier.navigationBarsPadding(),
+                            networkStatus = networkStatus
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .nestedScroll(scrollBehavior.nestedScrollConnection),
+                ) { paddingValues ->
+                    NavGraph(
+                        navHostController,
+                        modifier = Modifier.padding(paddingValues),
                     )
-                )
-                NavGraph(
-                    navHostController,
-                    scrollBehavior,
-                )
+                }
             }
         }
     }

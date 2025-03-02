@@ -23,7 +23,6 @@ private const val TAG = "NavGraph"
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier
 ) {
 
@@ -31,8 +30,6 @@ fun NavGraph(
         composable<Routes.HomeScreen> {
             HomeScreen(
                 modifier = modifier,
-                navController = navController,
-                scrollBehavior = scrollBehavior,
                 onImageClick = {
                     navController.navigate(Routes.WallpaperScreen(it))
                 }
