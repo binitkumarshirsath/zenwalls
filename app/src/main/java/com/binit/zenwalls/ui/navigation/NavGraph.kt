@@ -2,6 +2,7 @@ package com.binit.zenwalls.ui.navigation
 
 import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ private const val TAG = "NavGraph"
 @Composable
 fun NavGraph(
     navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier
 ) {
 
@@ -30,6 +32,7 @@ fun NavGraph(
         composable<Routes.HomeScreen> {
             HomeScreen(
                 modifier = modifier,
+                snackbarHostState,
                 onImageClick = {
                     navController.navigate(Routes.WallpaperScreen(it))
                 }
@@ -40,6 +43,7 @@ fun NavGraph(
             val wallpaperScreenViewModel: WallpaperScreenViewModel = koinViewModel()
             WallpaperScreen(
                 modifier = modifier,
+
                 onBackClick = {
                     navController.navigateUp()
                 },
