@@ -16,7 +16,9 @@ import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.ui.screens.favourite.FavouriteScreen
 import com.binit.zenwalls.ui.screens.search.SearchScreen
 import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreen
+import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreenViewModel
 import com.binit.zenwalls.ui.screens.wallpaper_list.HomeScreen
+import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "NavGraph"
 
@@ -42,10 +44,17 @@ fun NavGraph(
             )
         }
 
-        composable<Routes.WallpaperScreen> { backStackEntry ->
-            val wallpaperId = backStackEntry.toRoute<Routes.WallpaperScreen>().wallpaperId
+        composable<Routes.WallpaperScreen> {
+            val wallpaperScreenViewModel : WallpaperScreenViewModel = koinViewModel()
+            val wallpaperId = wallpaperScreenViewModel.imageId
             Log.d(TAG, "wallpaperId: $wallpaperId")
-            WallpaperScreen(wallpaperId)
+            WallpaperScreen(
+                modifier = modifier,
+                onBackClick = {
+                    navController.navigateUp()
+                },
+                wallpaperScreenViewModel = wallpaperScreenViewModel
+            )
         }
 
         composable<Routes.SearchScreen> {

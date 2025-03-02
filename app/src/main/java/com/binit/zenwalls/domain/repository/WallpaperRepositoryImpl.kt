@@ -11,18 +11,25 @@ import com.binit.zenwalls.domain.networkUtil.map
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 
-class WallpaperRepositoryImpl (
+class WallpaperRepositoryImpl(
     private val httpClient: HttpClient
-):WallpaperRepository{
+) : WallpaperRepository {
     override suspend fun getFeedImages(): Result<List<UnsplashImage>, NetworkError> {
-        return safeCall <List<UnsplashImageDTO>>{
-           httpClient.get(urlString = constructUrl("/photos"))
+        return safeCall<List<UnsplashImageDTO>> {
+            httpClient.get(urlString = constructUrl("/photos"))
         }.map {
-            it.map { unsplashImageDTO->
+            it.map { unsplashImageDTO ->
                 unsplashImageDTO.toUnsplashImage()
             }
         }
     }
 
+    override suspend fun getImage(imageId: String): Result<UnsplashImage, NetworkError> {
+        return safeCall<UnsplashImageDTO> {
+            httpClient.get(urlString = constructUrl("/photos/$imageId"))
+        }.map {
+            it.toUnsplashImage()
+        }
+    }
 
 }

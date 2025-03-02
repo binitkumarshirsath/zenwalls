@@ -3,6 +3,7 @@ package com.binit.zenwalls.di
 import com.binit.zenwalls.data.network.HttpClientFactory
 import com.binit.zenwalls.domain.repository.WallpaperRepository
 import com.binit.zenwalls.domain.repository.WallpaperRepositoryImpl
+import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreenViewModel
 import com.binit.zenwalls.ui.screens.wallpaper_list.HomeScreenViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -22,4 +23,5 @@ val appModule = module {
     }.bind(WallpaperRepository::class)
 
     viewModelOf(::HomeScreenViewModel)
+    viewModelOf(::WallpaperScreenViewModel)
 }

@@ -85,19 +85,7 @@ fun ImagePreview(
                                 .fillMaxWidth()
                                 .background(Primary)
                         ) {
-                            AsyncImage(
-                                model = image.photographerProfileImgUrl,
-                                contentDescription = "photographer",
-                                modifier = modifier
-                                    .padding(start = 10.dp, end = 20.dp)
-                                    .size(40.dp)
-                                    .clip(RoundedCornerShape(50))
-                            )
-
-                            Text(
-                                text = image.photographerName?.uppercase() ?: "Anonymous",
-                                color = Color.White
-                            )
+                            PhotographerInfo(image)
                         }
                     }
                     AsyncImage(
