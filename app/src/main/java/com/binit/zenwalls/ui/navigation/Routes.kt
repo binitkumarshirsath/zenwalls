@@ -13,5 +13,5 @@ sealed class Routes {
     @Serializable
     data object FavouriteScreen : Routes()
     @Serializable
-    data class ProfileScreen(val profileId: String) : Routes()
+    data class ProfileScreen(val photoGrapherProfileLink: String) : Routes()
 }

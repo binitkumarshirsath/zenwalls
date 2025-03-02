@@ -4,16 +4,13 @@ import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.ui.screens.favourite.FavouriteScreen
+import com.binit.zenwalls.ui.screens.profile.ProfileScreen
 import com.binit.zenwalls.ui.screens.search.SearchScreen
 import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreen
 import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreenViewModel
@@ -43,14 +40,25 @@ fun NavGraph(
         }
 
         composable<Routes.WallpaperScreen> {
-            val wallpaperScreenViewModel : WallpaperScreenViewModel = koinViewModel()
+            val wallpaperScreenViewModel: WallpaperScreenViewModel = koinViewModel()
             WallpaperScreen(
                 modifier = modifier,
                 onBackClick = {
                     navController.navigateUp()
                 },
+                onProfileClick = {
+                    navController.navigate(Routes.ProfileScreen(it))
+                },
                 wallpaperScreenViewModel = wallpaperScreenViewModel
             )
+        }
+
+        composable<Routes.ProfileScreen> {
+            val photographerProfileLink = it.toRoute<Routes.ProfileScreen>().photoGrapherProfileLink
+            Log.d(TAG,"photographerProfileLink: $photographerProfileLink")
+            ProfileScreen(photographerProfileLink, onBackClick = {
+                navController.navigateUp()
+            }, modifier)
         }
 
         composable<Routes.SearchScreen> {

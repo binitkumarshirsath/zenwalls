@@ -44,6 +44,7 @@ private const val TAG = "WallpaperScreen"
 fun WallpaperScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
+    onProfileClick:(profileUrl:String)->Unit={},
     wallpaperScreenViewModel: WallpaperScreenViewModel = koinViewModel()
 ) {
     val image = wallpaperScreenViewModel.image.collectAsState()
@@ -53,7 +54,7 @@ fun WallpaperScreen(
         .build()
 
     Column {
-        WallpaperScreenTopBar(image.value, onBackClick)
+        WallpaperScreenTopBar(image= image.value,onBackClick= onBackClick, onProfileClick = onProfileClick)
 
         Column(
             modifier
@@ -203,6 +204,7 @@ fun WallpaperScreen(
                                         // the offset relative to the center
                                         val centerX = size.width / 2
                                         val centerY = size.height / 2
+
 
                                         // The distance from tap to center, adjusted for zoom factor
                                         // Negative because we want to move the image in the opposite direction
