@@ -9,6 +9,7 @@ fun UnsplashImageDTO.toUnsplashImage():UnsplashImage{
         imageUrlSmall = urls?.small,
         imageUrlRegular = urls?.regular,
         imageUrlRaw = urls?.raw,
+        imageUrlFull = urls?.full,
         photographerName = user?.name,
         photographerUsername = user?.username,
         photographerProfileImgUrl = user?.profileImage?.large,

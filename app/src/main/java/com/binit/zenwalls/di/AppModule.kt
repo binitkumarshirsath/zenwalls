@@ -1,8 +1,10 @@
 package com.binit.zenwalls.di
 
 import com.binit.zenwalls.data.network.HttpClientFactory
+import com.binit.zenwalls.data.repository.DownloadRepoImpl
+import com.binit.zenwalls.data.repository.WallpaperRepositoryImpl
+import com.binit.zenwalls.domain.repository.DownloadRepository
 import com.binit.zenwalls.domain.repository.WallpaperRepository
-import com.binit.zenwalls.domain.repository.WallpaperRepositoryImpl
 import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreenViewModel
 import com.binit.zenwalls.ui.screens.wallpaper_list.HomeScreenViewModel
 import io.ktor.client.HttpClient
@@ -18,9 +20,13 @@ val appModule = module {
     }.bind(HttpClient::class)
 
 
-    single{
+    single {
         WallpaperRepositoryImpl(get())
     }.bind(WallpaperRepository::class)
+
+    single {
+        DownloadRepoImpl(get())
+    }.bind(DownloadRepository::class)
 
     viewModelOf(::HomeScreenViewModel)
     viewModelOf(::WallpaperScreenViewModel)

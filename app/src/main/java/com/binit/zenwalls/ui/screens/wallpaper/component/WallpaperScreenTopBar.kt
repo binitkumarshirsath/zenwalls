@@ -1,12 +1,10 @@
 package com.binit.zenwalls.ui.screens.wallpaper.component
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.binit.zenwalls.R
@@ -29,7 +26,8 @@ import com.binit.zenwalls.ui.components.PhotographerInfo
 fun WallpaperScreenTopBar(
     image: UnsplashImage?,
     onBackClick: () -> Unit,
-    onProfileClick:(profileUrl:String)->Unit,
+    showBottomSheet: () -> Unit,
+    onProfileClick: (profileUrl: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -47,7 +45,7 @@ fun WallpaperScreenTopBar(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.clickable(
-                        interactionSource = remember {MutableInteractionSource()},
+                        interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) {
                         image.photographerProfileLink?.let { onProfileClick.invoke(it) }
@@ -62,7 +60,14 @@ fun WallpaperScreenTopBar(
                 Icon(
                     painter = painterResource(R.drawable.baseline_arrow_downward_24),
                     contentDescription = "download_btn",
-                    modifier.size(20.dp)
+                    modifier
+                        .size(20.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) {
+                            showBottomSheet.invoke()
+                        }
                 )
                 Spacer(Modifier.width(10.dp))
             }
