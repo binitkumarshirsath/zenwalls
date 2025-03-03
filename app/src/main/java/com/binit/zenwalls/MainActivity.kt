@@ -55,14 +55,6 @@ class MainActivity : ComponentActivity() {
                     snackbarHost = {
                         SnackbarHost(hostState = snackbarHostState)
                     },
-                    topBar = {
-                        TopBar(
-                            scrollBehavior,
-                            onSearchClick = {
-                                navHostController.navigate(Routes.SearchScreen)
-                            }
-                        )
-                    },
                     bottomBar = {
                         NetworkStatusBar(
                             modifier = Modifier.navigationBarsPadding(),
@@ -75,6 +67,7 @@ class MainActivity : ComponentActivity() {
                 ) { paddingValues ->
                     NavGraph(
                         navHostController,
+                        scrollBehavior,
                         snackbarHostState,
                         modifier = Modifier.padding(paddingValues),
                     )
