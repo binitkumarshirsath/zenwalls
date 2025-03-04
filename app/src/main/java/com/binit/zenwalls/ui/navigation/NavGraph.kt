@@ -46,7 +46,7 @@ fun NavGraph(
             val wallpaperScreenViewModel: WallpaperScreenViewModel = koinViewModel()
             WallpaperScreen(
                 modifier = modifier,
-
+                snackbarHostState,
                 onBackClick = {
                     navController.navigateUp()
                 },
@@ -67,7 +67,9 @@ fun NavGraph(
 
         composable<Routes.SearchScreen> {
             SearchScreen(
-                navController
+                navController,
+                snackbarHostState,
+
             )
         }
 

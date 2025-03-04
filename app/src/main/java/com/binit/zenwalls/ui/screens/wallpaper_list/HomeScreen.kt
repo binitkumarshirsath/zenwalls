@@ -46,7 +46,7 @@ fun HomeScreen(
     val images by viewModel.images.collectAsState()
 
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel.snackBarEvent) {
         viewModel.snackBarEvent.collect { event ->
             scope.launch {
                 snackBarHostState.showSnackbar(

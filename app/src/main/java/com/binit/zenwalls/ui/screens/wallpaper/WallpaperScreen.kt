@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.binit.zenwalls.ui.screens.wallpaper.component.WallpaperBottomSheet
 import com.binit.zenwalls.ui.screens.wallpaper.component.WallpaperContainer
 import com.binit.zenwalls.ui.screens.wallpaper.component.WallpaperScreenTopBar
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 private const val TAG = "WallpaperScreen"
@@ -33,6 +36,7 @@ private const val TAG = "WallpaperScreen"
 @Composable
 fun WallpaperScreen(
     modifier: Modifier = Modifier,
+    snackBarHostState: SnackbarHostState,
     onBackClick: () -> Unit = {},
     onProfileClick: (profileUrl: String) -> Unit = {},
     wallpaperScreenViewModel: WallpaperScreenViewModel = koinViewModel()
@@ -42,6 +46,20 @@ fun WallpaperScreen(
     val sheetState = rememberModalBottomSheetState()
 
     var isBottomSheetVisible by remember { mutableStateOf(false) }
+
+
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(wallpaperScreenViewModel.snackBarEvent) {
+        wallpaperScreenViewModel.snackBarEvent.collect { event ->
+            scope.launch {
+                snackBarHostState.showSnackbar(
+                    message = event.message,
+                    duration = event.duration
+                )
+            }
+        }
+    }
+
 
     Column {
         WallpaperScreenTopBar(

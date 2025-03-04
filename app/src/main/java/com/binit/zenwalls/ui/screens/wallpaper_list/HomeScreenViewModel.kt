@@ -3,6 +3,7 @@ package com.binit.zenwalls.ui.screens.wallpaper_list
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.binit.zenwalls.domain.NetworkErrorToMessageMapper
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.domain.networkUtil.NetworkError
 import com.binit.zenwalls.domain.networkUtil.onError
@@ -37,16 +38,7 @@ class HomeScreenViewModel(
                 _images.value = it
                 Log.d(TAG, "images: $images")
             }.onError {
-                val message = when (it) {
-                    NetworkError.BAD_REQUEST -> "Bad request. Please try again."
-                    NetworkError.UNAUTHORIZED -> "Unauthorized access. Please log in again."
-                    NetworkError.FORBIDDEN -> "Access denied. You don't have permission."
-                    NetworkError.NOT_FOUND -> "Requested resource not found."
-                    NetworkError.NO_INTERNET_CONNECTION -> "No internet connection. Check your network."
-                    NetworkError.UNKNOWN_ERROR -> "An unknown error occurred. Please try again later."
-                    NetworkError.SERVER_ERROR -> "Server error. Please try again after some time."
-                    NetworkError.SERIALISATION_ERROR -> "Data processing error. Please report this issue."
-                }
+                val message = NetworkErrorToMessageMapper(it)
                 _snackBarEvent.emit(SnackBarEvent(message))
             }
         }

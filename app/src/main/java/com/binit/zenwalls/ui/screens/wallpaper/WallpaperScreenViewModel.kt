@@ -4,13 +4,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.binit.zenwalls.domain.NetworkErrorToMessageMapper
 import com.binit.zenwalls.domain.model.UnsplashImage
+import com.binit.zenwalls.domain.networkUtil.onError
 import com.binit.zenwalls.domain.networkUtil.onSuccess
 import com.binit.zenwalls.domain.repository.DownloadRepository
 import com.binit.zenwalls.domain.repository.WallpaperRepository
+import com.binit.zenwalls.domain.util.SnackBarEvent
 import com.binit.zenwalls.ui.navigation.Routes
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -22,6 +27,9 @@ class WallpaperScreenViewModel(
     private val downloadRepo: DownloadRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val _snackBarEvent = MutableSharedFlow<SnackBarEvent>()
+    val snackBarEvent = _snackBarEvent.asSharedFlow()
 
 
     val imageId: String = savedStateHandle.toRoute<Routes.WallpaperScreen>().wallpaperId
@@ -56,6 +64,9 @@ class WallpaperScreenViewModel(
         viewModelScope.launch {
             repository.getImage(imageId).onSuccess {
                 _image.value = it
+            }.onError {
+                val message = NetworkErrorToMessageMapper(it)
+                _snackBarEvent.emit(SnackBarEvent(message))
             }
         }
     }
