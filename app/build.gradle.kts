@@ -94,6 +94,10 @@ dependencies {
     //splash screen
     implementation(libs.androidx.core.splashscreen)
 
+    //pagination
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

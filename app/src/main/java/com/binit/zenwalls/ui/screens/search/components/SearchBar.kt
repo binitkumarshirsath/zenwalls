@@ -1,7 +1,10 @@
 package com.binit.zenwalls.ui.screens.search.components
 
+import android.util.Log
+import android.view.KeyEvent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,25 +23,35 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.binit.zenwalls.ui.components.BackButton
+import com.binit.zenwalls.ui.screens.search.SearchScreenViewModel
+
+private const val TAG = "SearchBar"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
-    query:String,
-    onQueryChange:(query:String)->Unit,
-    onQueryClear : ()->Unit,
+    searchScreenViewModel: SearchScreenViewModel,
+    focusRequester: FocusRequester,
+    query: String,
+    onQueryChange: (query: String) -> Unit,
+    onQueryClear: () -> Unit,
     navHostController: NavHostController,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     TopAppBar(
         title = {
             Box(
@@ -52,9 +65,20 @@ fun SearchBar(
                 BasicTextField(
                     value = query,
                     onValueChange = { onQueryChange.invoke(it) },
+
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(36.dp),
+                        .height(36.dp)
+                        .focusRequester(focusRequester)
+                        .onKeyEvent {
+                            if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
+                                Log.d(TAG,"Enter key pressed")
+                                searchScreenViewModel.searchImages()
+                                true
+                            } else {
+                                false
+                            }
+                        },
                     textStyle = TextStyle(
                         fontSize = 16.sp,
                         color = Color.Black,
@@ -72,17 +96,26 @@ fun SearchBar(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = "search_icon",
                                 tint = Color.Gray.copy(0.7f),
-                                modifier = Modifier.size(20.dp)
+                                modifier = Modifier.size(20.dp).clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null
+                                ) {
+                                    searchScreenViewModel.searchImages()
+                                }
                             )
                             Spacer(Modifier.width(8.dp))
 
-                            Box(modifier.weight(1f),
-                                contentAlignment = Alignment.CenterStart){
-                                if(query.isEmpty()){
-                                    Text("Search photos...",
+                            Box(
+                                modifier.weight(1f),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                if (query.isEmpty()) {
+                                    Text(
+                                        "Search photos...",
                                         modifier = Modifier.padding(start = 3.dp),
                                         color = Color.Gray.copy(alpha = 0.7f),
-                                        fontSize = 18.sp)
+                                        fontSize = 18.sp
+                                    )
                                 }
                                 innerTextField()
                             }

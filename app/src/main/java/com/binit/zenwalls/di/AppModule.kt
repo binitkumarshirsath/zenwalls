@@ -7,6 +7,7 @@ import com.binit.zenwalls.data.repository.WallpaperRepositoryImpl
 import com.binit.zenwalls.domain.repository.DownloadRepository
 import com.binit.zenwalls.domain.repository.NetworkConnectivityObserver
 import com.binit.zenwalls.domain.repository.WallpaperRepository
+import com.binit.zenwalls.ui.screens.search.SearchScreenViewModel
 import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreenViewModel
 import com.binit.zenwalls.ui.screens.wallpaper_list.HomeScreenViewModel
 import io.ktor.client.HttpClient
@@ -45,7 +46,7 @@ val appModule = module {
     }.bind(NetworkConnectivityObserver::class)
 
 
-
     viewModelOf(::HomeScreenViewModel)
     viewModelOf(::WallpaperScreenViewModel)
+    viewModelOf(::SearchScreenViewModel)
 }

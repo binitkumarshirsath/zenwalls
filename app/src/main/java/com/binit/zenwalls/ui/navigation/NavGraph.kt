@@ -13,6 +13,7 @@ import androidx.navigation.toRoute
 import com.binit.zenwalls.ui.screens.favourite.FavouriteScreen
 import com.binit.zenwalls.ui.screens.profile.ProfileScreen
 import com.binit.zenwalls.ui.screens.search.SearchScreen
+import com.binit.zenwalls.ui.screens.search.SearchScreenViewModel
 import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreen
 import com.binit.zenwalls.ui.screens.wallpaper.WallpaperScreenViewModel
 import com.binit.zenwalls.ui.screens.wallpaper_list.HomeScreen
@@ -34,7 +35,7 @@ fun NavGraph(
             HomeScreen(
                 modifier = Modifier,
                 snackbarHostState,
-                scrollBehavior =scrollBehavior,
+                scrollBehavior = scrollBehavior,
                 navHostController = navController,
                 onImageClick = {
                     navController.navigate(Routes.WallpaperScreen(it))
@@ -59,17 +60,19 @@ fun NavGraph(
 
         composable<Routes.ProfileScreen> {
             val photographerProfileLink = it.toRoute<Routes.ProfileScreen>().photoGrapherProfileLink
-            Log.d(TAG,"photographerProfileLink: $photographerProfileLink")
+            Log.d(TAG, "photographerProfileLink: $photographerProfileLink")
             ProfileScreen(photographerProfileLink, onBackClick = {
                 navController.navigateUp()
             }, modifier)
         }
 
         composable<Routes.SearchScreen> {
+            val searchScreenViewModel: SearchScreenViewModel = koinViewModel()
+
             SearchScreen(
                 navController,
                 snackbarHostState,
-
+                searchScreenViewModel,
             )
         }
 

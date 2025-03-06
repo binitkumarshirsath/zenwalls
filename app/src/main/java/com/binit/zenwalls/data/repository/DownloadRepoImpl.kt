@@ -3,9 +3,12 @@ package com.binit.zenwalls.data.repository
 import android.app.DownloadManager
 import android.content.Context
 import android.os.Environment
+import android.util.Log
 import androidx.core.net.toUri
 import com.binit.zenwalls.domain.repository.DownloadRepository
 
+
+private const val TAG = "DownloadRepoImpl"
 
 class DownloadRepoImpl(
     private val context: Context
@@ -30,7 +33,7 @@ class DownloadRepoImpl(
                 )
 
             val queue = downloadManager.enqueue(request)
-
+            Log.d(TAG,"Queue: $queue")
             return true
         } catch (e: Exception) {
             e.printStackTrace()
