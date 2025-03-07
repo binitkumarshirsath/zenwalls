@@ -3,6 +3,8 @@ package com.binit.zenwalls.data.network
 import com.binit.zenwalls.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.ANDROID
@@ -31,6 +33,17 @@ object HttpClientFactory {
                         coerceInputValues = true
                     }
                 )
+            }
+
+            install(HttpTimeout){
+                requestTimeoutMillis = 1000
+                connectTimeoutMillis = 3000
+                socketTimeoutMillis = 1000
+            }
+
+            install(HttpRequestRetry){
+                retryOnServerErrors(maxRetries = 5)
+                exponentialDelay()
             }
 
             defaultRequest {

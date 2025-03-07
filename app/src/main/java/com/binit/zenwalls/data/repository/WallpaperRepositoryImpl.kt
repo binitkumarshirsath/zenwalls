@@ -65,7 +65,8 @@ class WallpaperRepositoryImpl(
         Log.d(TAG,"🔍 Searching for: $query")
         return Pager(
             config = PagingConfig(
-                pageSize = 20,
+                pageSize = 10,
+                initialLoadSize = 30,
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {

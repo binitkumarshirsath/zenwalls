@@ -2,6 +2,8 @@ package com.binit.zenwalls.domain.networkUtil
 
 
 enum class NetworkError : Error {
+
+    REQUEST_TIMEOUT,
     BAD_REQUEST,                    //The request was unacceptable, often due to missing a required parameter
     UNAUTHORIZED,                   //Invalid Access Token
     FORBIDDEN,                      //Missing permissions to perform request

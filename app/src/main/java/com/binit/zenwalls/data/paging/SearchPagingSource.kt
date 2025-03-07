@@ -24,8 +24,9 @@ class SearchPagingSource(
         val perPage = params.loadSize
 
         Log.d(TAG,"🔍 Loading page: $currentPage with size: $perPage")
-        Log.d(TAG,"query: $query")
+
         val result = repo.searchImage(query, currentPage, perPage)
+
         return when (result) {
             is Result.Error -> {
                 LoadResult.Error(

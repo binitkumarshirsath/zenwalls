@@ -4,6 +4,7 @@ import com.binit.zenwalls.domain.networkUtil.NetworkError
 
 fun NetworkErrorToMessageMapper(error: NetworkError): String{
     val message = when (error) {
+        NetworkError.REQUEST_TIMEOUT ->"Request timed out. Please try again."
         NetworkError.BAD_REQUEST -> "Bad request. Please try again."
         NetworkError.UNAUTHORIZED -> "Unauthorized access. Please log in again."
         NetworkError.FORBIDDEN -> "Access denied. You don't have permission."
