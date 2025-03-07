@@ -1,13 +1,19 @@
 package com.binit.zenwalls.ui.screens.wallpaper_list
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
@@ -17,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -58,6 +65,7 @@ fun HomeScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+
         Column(modifier = Modifier.fillMaxSize()) {
             TopBar(
                 scrollBehavior,
@@ -65,6 +73,7 @@ fun HomeScreen(
                     navHostController.navigate(Routes.SearchScreen)
                 }
             )
+
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Adaptive(150.dp),
                 userScrollEnabled = true,
@@ -87,6 +96,23 @@ fun HomeScreen(
             }
 
 
+        }
+        FloatingActionButton(
+            onClick = {
+                navHostController.navigate(Routes.FavouriteScreen)
+            },
+            modifier = Modifier.align(Alignment.BottomEnd).padding(end = 10.dp, bottom = 10.dp),
+            containerColor = Color.Transparent.copy(
+                alpha = 0.2f
+            ),
+            shape = FloatingActionButtonDefaults.largeShape
+        ) {
+            Icon(
+                Icons.Default.Favorite,
+                contentDescription = "favourite_icon",
+                tint = Color.Red,
+                modifier = Modifier.size(40.dp)
+            )
         }
         if (isPreviewVisible.value && previewImage.value != null) {
             ImagePreview(image = previewImage.value!!)

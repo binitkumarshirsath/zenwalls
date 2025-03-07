@@ -1,27 +1,30 @@
 package com.binit.zenwalls.ui.screens.wallpaper_list.components
 
-import android.util.Log
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.ui.components.ShimmerEffect
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 private const val TAG = "ImageContainer"
@@ -34,56 +37,52 @@ fun ImageContainer(
     image: UnsplashImage,
     onImageClick: (imageId: String) -> Unit = {},
 ) {
-
     var isLoading by remember { mutableStateOf(true) }
+    val coroutineScope = rememberCoroutineScope()
     val aspectRatio by remember {
         derivedStateOf { (image.width?.toFloat() ?: 1f) / (image.height?.toFloat() ?: 1f) }
     }
 
-    val imageRequest =
-        ImageRequest
-            .Builder(LocalContext.current)
-            .data(image.imageUrlSmall)
-            .crossfade(true)
-            .build()
-    if (isLoading) {
-        ShimmerEffect(
-            modifier
-                .aspectRatio(aspectRatio)
-                .width(image.width?.dp ?: 0.dp)
-                .height(image.height?.dp ?: 0.dp)
+    val imageRequest = ImageRequest
+        .Builder(LocalContext.current)
+        .data(image.imageUrlSmall)
+        .crossfade(true)
+        .build()
 
-        )
-    }
+    Box(
+        modifier = modifier
+            .aspectRatio(aspectRatio)
+            .clickable { onImageClick(image.id) }
+            .pointerInput(Unit) {
+                detectDragGesturesAfterLongPress(
+                    onDragStart = { onPreviewImageClick(image) },
+                    onDragCancel = { onPreviewImageEnd() },
+                    onDragEnd = { onPreviewImageEnd() },
+                    onDrag = { _, _ -> }
+                )
+            }
+    ) {
+        if (isLoading) {
+            ShimmerEffect(
+                modifier = Modifier.fillMaxSize()
+            )
+        }
 
         AsyncImage(
             model = imageRequest,
-            onState = {
-                isLoading = false
+            onState = { state ->
+               coroutineScope.launch {
+                   delay(400)
+                   isLoading = if(state is AsyncImagePainter.State.Success){
+                       false
+                   }else{
+                       true
+                   }
+               }
             },
             contentDescription = image.description,
             contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .aspectRatio(aspectRatio)
-                .clickable {
-                    onImageClick.invoke(image.id)
-                }
-                .pointerInput(Unit) {
-                    detectDragGesturesAfterLongPress(
-                        onDragStart = {
-                            onPreviewImageClick.invoke(image)
-                        },
-                        onDragCancel = {
-                            Log.d(TAG, "onDragCancel ran")
-                            onPreviewImageEnd.invoke()
-                        },
-                        onDragEnd = {
-                            Log.d(TAG, "onDragEnd ran")
-                            onPreviewImageEnd.invoke()
-                        },
-                        onDrag = { _, _ -> }
-                    )
-                }
+            modifier = Modifier.fillMaxSize()
         )
-
+    }
 }

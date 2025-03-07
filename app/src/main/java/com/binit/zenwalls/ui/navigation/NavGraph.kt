@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.binit.zenwalls.ui.screens.favourite.FavouriteScreen
+import com.binit.zenwalls.ui.screens.favourite.FavouriteScreenViewModel
 import com.binit.zenwalls.ui.screens.profile.ProfileScreen
 import com.binit.zenwalls.ui.screens.search.SearchScreen
 import com.binit.zenwalls.ui.screens.search.SearchScreenViewModel
@@ -80,7 +81,15 @@ fun NavGraph(
         }
 
         composable<Routes.FavouriteScreen> {
-            FavouriteScreen()
+            val favouriteScreenViewModel:FavouriteScreenViewModel = koinViewModel()
+            FavouriteScreen(
+                navcontroller = navController,
+                snackbarHostState = snackbarHostState,
+                scrollBehavior = scrollBehavior,
+                favouriteScreenViewModel = favouriteScreenViewModel,
+                onImageClick = {  },
+                modifier = Modifier
+            )
         }
 
     }
