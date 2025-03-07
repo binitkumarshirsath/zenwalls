@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -31,27 +33,30 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.binit.zenwalls.ui.components.BackButton
-import com.binit.zenwalls.ui.screens.search.SearchScreenViewModel
 
 private const val TAG = "SearchBar"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
-    searchScreenViewModel: SearchScreenViewModel,
     focusRequester: FocusRequester,
+    onSearch: () -> Unit,
     query: String,
     onQueryChange: (query: String) -> Unit,
     onQueryClear: () -> Unit,
     navHostController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
     TopAppBar(
         title = {
             Box(
@@ -65,15 +70,17 @@ fun SearchBar(
                 BasicTextField(
                     value = query,
                     onValueChange = { onQueryChange.invoke(it) },
-
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {keyboardController?.hide()}),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(36.dp)
                         .focusRequester(focusRequester)
                         .onKeyEvent {
                             if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
-                                Log.d(TAG,"Enter key pressed")
-                                searchScreenViewModel.searchImages()
+                                Log.d(TAG, "Enter key pressed")
+                                onSearch.invoke()
                                 true
                             } else {
                                 false
@@ -96,12 +103,15 @@ fun SearchBar(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = "search_icon",
                                 tint = Color.Gray.copy(0.7f),
-                                modifier = Modifier.size(20.dp).clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null
-                                ) {
-                                    searchScreenViewModel.searchImages()
-                                }
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null
+                                    ) {
+                                        onSearch.invoke()
+                                        keyboardController?.hide()
+                                    }
                             )
                             Spacer(Modifier.width(8.dp))
 

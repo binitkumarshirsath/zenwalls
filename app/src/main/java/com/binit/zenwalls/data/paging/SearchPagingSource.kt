@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.domain.networkUtil.Result
+import com.binit.zenwalls.domain.networkUtil.onSuccess
 import com.binit.zenwalls.domain.repository.WallpaperRepository
 
 private const val TAG = "SearchPagingSource"
@@ -25,7 +26,6 @@ class SearchPagingSource(
         Log.d(TAG,"🔍 Loading page: $currentPage with size: $perPage")
         Log.d(TAG,"query: $query")
         val result = repo.searchImage(query, currentPage, perPage)
-        Log.d(TAG,"result $result")
         return when (result) {
             is Result.Error -> {
                 LoadResult.Error(
