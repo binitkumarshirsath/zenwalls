@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,31 +30,46 @@ fun ShowHints(
             .padding(horizontal = 16.dp)
             .wrapContentSize()
     ) {
-        searchKeywords.map { searchKeyword ->
-            Box(
-                modifier = Modifier.padding(end = 6.dp, top = 6.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .clip(RoundedCornerShape(50))
-                        .background(
-                            Color.Gray.copy(alpha = 0.1f)
-                        )
 
-                ) {
-                    Text(
-                        text = searchKeyword,
+        val shuffledKeywords = remember { searchKeywords.shuffled() }
+        LazyRow(
+        ) {
+            items(count = shuffledKeywords.size) {
+                Box(
+                    modifier = Modifier.padding(end = 10.dp)
+                ){
+                    Box(
                         modifier = Modifier
-                            .padding(horizontal = 8.dp, vertical = 8.dp)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) {
-                                setQuery(searchKeyword)
-                            }
-                    )
+                            .clip(RoundedCornerShape(50))
+                            .background(
+                                Color.Gray.copy(alpha = 0.1f)
+                            )
+
+                    ) {
+                        Text(
+                            text = shuffledKeywords[it],
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
+                                    setQuery( shuffledKeywords[it])
+
+                                }
+                        )
+                    }
                 }
+            }
+        }
+
+
+        shuffledKeywords.map { searchKeyword ->
+            Box(
+                modifier = Modifier.padding(end = 6.dp, top = 6.dp, bottom = 6.dp)
+            ) {
+
+
             }
         }
     }

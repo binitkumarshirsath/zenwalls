@@ -31,9 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -48,6 +47,7 @@ private const val TAG = "SearchBar"
 @Composable
 fun SearchBar(
     focusRequester: FocusRequester,
+    keyboardController : SoftwareKeyboardController?,
     onSearch: () -> Unit,
     query: String,
     onQueryChange: (query: String) -> Unit,
@@ -56,7 +56,7 @@ fun SearchBar(
     modifier: Modifier = Modifier
 ) {
 
-    val keyboardController = LocalSoftwareKeyboardController.current
+
     TopAppBar(
         title = {
             Box(
@@ -70,9 +70,15 @@ fun SearchBar(
                 BasicTextField(
                     value = query,
                     onValueChange = { onQueryChange.invoke(it) },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+
                     keyboardActions = KeyboardActions(
-                        onDone = {keyboardController?.hide()}),
+                        onDone = {
+                            keyboardController?.hide()
+                            onSearch.invoke()
+
+                        }
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(36.dp)
@@ -85,7 +91,10 @@ fun SearchBar(
                             } else {
                                 false
                             }
-                        },
+                        }
+
+                    ,
+
                     textStyle = TextStyle(
                         fontSize = 16.sp,
                         color = Color.Black,
