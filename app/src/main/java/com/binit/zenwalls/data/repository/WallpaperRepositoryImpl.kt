@@ -10,21 +10,28 @@ import com.binit.zenwalls.data.network.safeCall
 import com.binit.zenwalls.data.paging.SearchPagingSource
 import com.binit.zenwalls.data.remote.dto.UnsplashImageDTO
 import com.binit.zenwalls.data.remote.dto.UnsplashImagesSearchResult
+import com.binit.zenwalls.domain.NetworkErrorToMessageMapper
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.domain.networkUtil.NetworkError
 import com.binit.zenwalls.domain.networkUtil.Result
 import com.binit.zenwalls.domain.networkUtil.map
+import com.binit.zenwalls.domain.networkUtil.onError
 import com.binit.zenwalls.domain.repository.WallpaperRepository
+import com.binit.zenwalls.domain.util.SnackBarEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 private const val TAG = "WallpaperRepositoryImpl"
 
 class WallpaperRepositoryImpl(
     private val httpClient: HttpClient
 ) : WallpaperRepository {
+
+
     override suspend fun getFeedImages(): Result<List<UnsplashImage>, NetworkError> {
         return safeCall<List<UnsplashImageDTO>> {
             httpClient.get(urlString = constructUrl("/photos"))
@@ -62,7 +69,6 @@ class WallpaperRepositoryImpl(
     }
 
     override fun searchImagesPaging(query: String): Flow<PagingData<UnsplashImage>> {
-        Log.d(TAG,"🔍 Searching for: $query")
         return Pager(
             config = PagingConfig(
                 pageSize = 10,

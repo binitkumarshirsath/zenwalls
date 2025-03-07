@@ -1,5 +1,6 @@
 package com.binit.zenwalls.ui.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -30,11 +31,13 @@ import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.ui.theme.Primary
 
 
+private const val TAG = "ImagePreview"
 @Composable
 fun ImagePreview(
     image: UnsplashImage,
     modifier: Modifier = Modifier
 ) {
+    Log.d(TAG,"ImagePreview Ran")
     val context = LocalContext.current
     val imageRequest = ImageRequest.Builder(context)
         .data(image.imageUrlRegular)
@@ -43,7 +46,7 @@ fun ImagePreview(
         .build()
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
@@ -68,8 +71,6 @@ fun ImagePreview(
 
                 ) {
                 Column {
-
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier

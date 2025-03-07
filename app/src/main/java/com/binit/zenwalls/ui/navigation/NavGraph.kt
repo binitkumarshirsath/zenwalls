@@ -73,6 +73,9 @@ fun NavGraph(
                 navController,
                 snackbarHostState,
                 searchScreenViewModel,
+                onImageClick = {
+                    navController.navigate(Routes.WallpaperScreen(it))
+                }
             )
         }
 

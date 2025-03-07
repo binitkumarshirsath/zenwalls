@@ -57,6 +57,5 @@ fun ImageContainer(
                     onDrag = { _, _ -> }
                 )
             }
-
     )
 }

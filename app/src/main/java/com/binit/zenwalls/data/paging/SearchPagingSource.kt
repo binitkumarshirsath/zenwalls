@@ -20,6 +20,7 @@ class SearchPagingSource(
 
     private val STARTING_PAGE_INDEX = 1
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UnsplashImage> {
+        Log.d(TAG,"LoadParams: $params")
         val currentPage = params.key ?: STARTING_PAGE_INDEX
         val perPage = params.loadSize
 

@@ -7,9 +7,12 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.domain.repository.WallpaperRepository
+import com.binit.zenwalls.domain.util.SnackBarEvent
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
