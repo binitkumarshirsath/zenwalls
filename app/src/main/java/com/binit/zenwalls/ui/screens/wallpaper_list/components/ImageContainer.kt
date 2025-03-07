@@ -1,5 +1,6 @@
 package com.binit.zenwalls.ui.screens.wallpaper_list.components
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.aspectRatio
@@ -18,6 +19,8 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.binit.zenwalls.domain.model.UnsplashImage
 
+
+private const val TAG = "ImageContainer"
 @Composable
 fun ImageContainer(
     modifier: Modifier = Modifier,
@@ -52,8 +55,13 @@ fun ImageContainer(
                     onDragStart = {
                         onPreviewImageClick.invoke(image)
                     },
-                    onDragEnd = {onPreviewImageEnd.invoke()},
-                    onDragCancel = {onPreviewImageEnd.invoke() },
+                    onDragCancel = {
+                        Log.d(TAG,"onDragCancel ran")
+                        onPreviewImageEnd.invoke()
+                    },
+                    onDragEnd = {
+                        Log.d(TAG,"onDragEnd ran")
+                        onPreviewImageEnd.invoke()},
                     onDrag = { _, _ -> }
                 )
             }

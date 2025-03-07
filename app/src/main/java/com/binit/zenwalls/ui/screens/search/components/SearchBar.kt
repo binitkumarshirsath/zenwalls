@@ -93,7 +93,7 @@ fun SearchBar(
                     ),
                     singleLine = true,
                     maxLines = 1, // Ensures stable alignment
-                    cursorBrush = SolidColor(Color.Black),
+//                    cursorBrush = SolidColor(Color.Black),
                     decorationBox = { innerTextField ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically, // Centers text & icons
@@ -109,8 +109,9 @@ fun SearchBar(
                                         interactionSource = remember { MutableInteractionSource() },
                                         indication = null
                                     ) {
-                                        onSearch.invoke()
+                                        focusRequester.freeFocus()
                                         keyboardController?.hide()
+                                        onSearch.invoke()
                                     }
                             )
                             Spacer(Modifier.width(8.dp))

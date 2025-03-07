@@ -53,19 +53,18 @@ fun SearchScreen(
     onImageClick: (imageId: String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+
     val focusRequester = remember { FocusRequester() }
     val query by searchScreenViewModel.query.collectAsState()
     var showHints by remember { mutableStateOf(true) }
     val images = searchScreenViewModel.images.collectAsLazyPagingItems()
-
-
-
     val isPreviewVisible = remember { mutableStateOf(false) }
     val previewImage = remember { mutableStateOf<UnsplashImage?>(null) }
 
-
     LaunchedEffect(key1 = Unit) {
-        focusRequester.requestFocus()
+//        focusRequester.requestFocus()
+        searchScreenViewModel.setSearchQuery("Horse")
+        searchScreenViewModel.searchImages()
     }
 
     Log.d(TAG, "images: ${images.itemCount}")
@@ -73,13 +72,18 @@ fun SearchScreen(
     Box(
         modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
-    ){
+    ) {
+
+        Log.d(TAG,"isPreviewVisible: ${isPreviewVisible.value}")
+        Log.d(TAG,"previewImage: ${previewImage.value}")
+
+
         Column(
             Modifier.fillMaxSize()
         ) {
-            if (isPreviewVisible.value && previewImage.value != null) {
-                ImagePreview(image = previewImage.value!!)
-            }
+
+
+
             SearchBar(
                 focusRequester = focusRequester,
                 query = query,
@@ -87,10 +91,11 @@ fun SearchScreen(
                     searchScreenViewModel.setSearchQuery(it)
                     showHints = it.isEmpty()
                 },
-                onSearch ={
+                onSearch = {
+                    focusRequester.freeFocus()
                     searchScreenViewModel.searchImages()
                     showHints = false
-                    focusRequester.freeFocus()
+
                 },
                 onQueryClear = {
                     searchScreenViewModel.setSearchQuery("")
@@ -102,19 +107,20 @@ fun SearchScreen(
             Spacer(Modifier.height(8.dp))
 
             LazyVerticalStaggeredGrid(
-                columns = StaggeredGridCells.Adaptive(150.dp)
+                columns = StaggeredGridCells.Adaptive(150.dp),
+                userScrollEnabled = true
             ) {
                 items(count = images.itemCount) {
                     images[it]?.let { it1 ->
                         ImageContainer(
                             modifier,
-                            onPreviewImageClick = {unsplashimage->
-                                Log.d(TAG,"onPreviewImageClick Ran")
+                            onPreviewImageClick = { unsplashimage ->
+                                Log.d(TAG, "onPreviewImageClick Ran")
                                 isPreviewVisible.value = true
                                 previewImage.value = unsplashimage
                             },
                             onPreviewImageEnd = {
-                                Log.d(TAG,"onPreviewImageClick End")
+                                Log.d(TAG, "onPreviewImageClick End")
                                 isPreviewVisible.value = false
                                 previewImage.value = null
                             },
@@ -125,7 +131,9 @@ fun SearchScreen(
             }
 
 
-
+        }
+        if (isPreviewVisible.value && previewImage.value != null) {
+            ImagePreview(image = previewImage.value!!)
         }
     }
 
