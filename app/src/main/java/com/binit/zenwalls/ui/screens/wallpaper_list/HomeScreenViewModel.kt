@@ -52,9 +52,9 @@ class HomeScreenViewModel(
         )
 
 
-    init {
-        fetchImages()
-    }
+//    init {
+//        fetchImages()
+//    }
 
     private fun fetchImages() {
         viewModelScope.launch {

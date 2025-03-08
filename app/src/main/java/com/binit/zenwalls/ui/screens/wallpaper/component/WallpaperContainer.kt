@@ -24,14 +24,15 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.binit.zenwalls.domain.model.UnsplashImage
-
-import com.binit.zenwalls.ui.theme.BackGround
+import com.binit.zenwalls.ui.theme.Primary
+import com.binit.zenwalls.ui.theme.Secondary
 import kotlinx.coroutines.launch
 
 private const val TAG = "WallpaperContainer"
@@ -49,7 +50,15 @@ fun WallpaperContainer(
     Column(
         modifier
             .fillMaxSize()
-            .background(BackGround),
+            .background(Brush.verticalGradient(
+                colors = listOf(
+                    Primary.copy(alpha = 0.6f),
+                    Secondary.copy(alpha = 0.6f),
+                    Primary.copy(alpha = 0.6f),
+                    Secondary.copy(alpha = 0.6f),
+                    Primary.copy(alpha = 0.6f)
+                )
+            )),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
