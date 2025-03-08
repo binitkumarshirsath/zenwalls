@@ -1,5 +1,6 @@
 package com.binit.zenwalls.ui.screens.wallpaper_list
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.ui.components.ImagePreview
 import com.binit.zenwalls.ui.components.TopBar
@@ -37,6 +38,8 @@ import com.binit.zenwalls.ui.screens.wallpaper_list.components.ImageContainer
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
+
+private const val TAG = "Homescreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,8 +55,11 @@ fun HomeScreen(
     val isPreviewVisible = remember { mutableStateOf(false) }
     val previewImage = remember { mutableStateOf<UnsplashImage?>(null) }
     val images by viewModel.images.collectAsState()
+    val paginatedImages = viewModel.paginatedImage.collectAsLazyPagingItems()
     val favouritedImageIds by  viewModel.favouriteImageIds.collectAsStateWithLifecycle()
 
+
+    Log.d(TAG,"paginatedImages: ${paginatedImages.itemCount}")
     val scope = rememberCoroutineScope()
     LaunchedEffect(viewModel.snackBarEvent) {
         viewModel.snackBarEvent.collect { event ->
@@ -82,24 +88,28 @@ fun HomeScreen(
                 modifier = modifier
                     .fillMaxSize()
             ) {
-                items(images) {
-                     ImageContainer(
-                        modifier,
-                        onToggleFavouriteStatus ={unsplashImage->
-                            viewModel.toggleFavouriteImage(unsplashImage)
-                        },
-                        favouritedImageIds,
-                        onPreviewImageClick = {
-                            isPreviewVisible.value = true
-                            previewImage.value = it
-                        },
-                        onPreviewImageEnd = {
-                            isPreviewVisible.value = false
-                            previewImage.value = null
-                        },
-                        it,
-                        onImageClick
-                    )
+                items(count = paginatedImages.itemCount) {
+                    paginatedImages[it]?.let { it1 ->
+                        ImageContainer(
+                            modifier,
+                            onToggleFavouriteStatus = {unsplashimage->
+                                viewModel.toggleFavouriteImage(unsplashimage)
+                            },
+                            onPreviewImageClick = { unsplashimage ->
+                                Log.d(TAG, "onPreviewImageClick Ran")
+                                isPreviewVisible.value = true
+                                previewImage.value = unsplashimage
+                            },
+                            favouritedImageIds =favouritedImageIds ,
+                            onPreviewImageEnd = {
+                                Log.d(TAG, "onPreviewImageClick End")
+                                isPreviewVisible.value = false
+                                previewImage.value = null
+                            },
+                            image = it1,
+                            onImageClick = onImageClick
+                        )
+                    }
                 }
             }
 

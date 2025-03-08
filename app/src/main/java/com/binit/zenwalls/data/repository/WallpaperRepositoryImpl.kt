@@ -1,15 +1,18 @@
 package com.binit.zenwalls.data.repository
 
 import android.util.Log
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.binit.zenwalls.data.local.ZenWallsDatabase
 import com.binit.zenwalls.data.local.dao.FavouriteImagesDao
 import com.binit.zenwalls.data.mappers.toFavouriteImageEntity
 import com.binit.zenwalls.data.mappers.toUnsplashImage
 import com.binit.zenwalls.data.network.constructUrl
 import com.binit.zenwalls.data.network.safeCall
+import com.binit.zenwalls.data.paging.HomescreenRemoteMediator
 import com.binit.zenwalls.data.paging.SearchPagingSource
 import com.binit.zenwalls.data.remote.dto.UnsplashImageDTO
 import com.binit.zenwalls.data.remote.dto.UnsplashImagesSearchResult
@@ -28,7 +31,9 @@ private const val TAG = "WallpaperRepositoryImpl"
 
 class WallpaperRepositoryImpl(
     private val httpClient: HttpClient,
-    private val favouriteImagesDao: FavouriteImagesDao
+    private val favouriteImagesDao: FavouriteImagesDao,
+    private val db: ZenWallsDatabase,
+//    private val repo:WallpaperRepository, -->creates circular dependency
 ) : WallpaperRepository {
 
 
@@ -44,6 +49,24 @@ class WallpaperRepositoryImpl(
         }.map {
             it.map { unsplashImageDTO ->
                 unsplashImageDTO.toUnsplashImage()
+            }
+        }
+    }
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getFeedImagesPaging(): Flow<PagingData<UnsplashImage>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10,
+            ),
+            remoteMediator = HomescreenRemoteMediator(repo = this,
+                db = db),
+            pagingSourceFactory = {
+                db.homescreenImagesDao().getAllHomescreenFeedImages()
+            }
+        ).flow.map {pagingData->
+            pagingData.map {
+                it.toUnsplashImage()
             }
         }
     }

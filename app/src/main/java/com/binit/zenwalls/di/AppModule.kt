@@ -32,7 +32,7 @@ val appModule = module {
 
 
     single {
-        WallpaperRepositoryImpl(get(),get())
+        WallpaperRepositoryImpl(get(), get(), get())
     }.bind(WallpaperRepository::class)
 
     single {
@@ -59,11 +59,14 @@ val appModule = module {
 
 
     single<ZenWallsDatabase> {
-        Room.databaseBuilder(
+        Room
+            .databaseBuilder(
             get(),
             ZenWallsDatabase::class.java,
             Constants.DB_NAME,
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     single<FavouriteImagesDao> {

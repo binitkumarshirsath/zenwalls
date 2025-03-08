@@ -15,6 +15,8 @@ import com.binit.zenwalls.data.local.entities.UnsplashRemoteKeys
 import com.binit.zenwalls.data.mappers.toHomescreenImageEntity
 import com.binit.zenwalls.domain.networkUtil.Result
 import com.binit.zenwalls.domain.repository.WallpaperRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 private const val TAG = "HomescreenRemoteMediator"
@@ -70,6 +72,8 @@ class HomescreenRemoteMediator(
             val prevPage = if (currentPage == 1) null else currentPage - 1
             val nextPage = if (endOfPagination) null else currentPage + 1
 
+
+
             db.withTransaction {
                 val remoteKeys = when (response) {
                     is Result.Error -> {
@@ -116,9 +120,11 @@ class HomescreenRemoteMediator(
     private suspend fun getRemoteKeyClosestToCurrentPosition(
         state: PagingState<Int, HomescreenImageEntity>
     ): UnsplashRemoteKeys? {
-        return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.id?.let { id ->
-                homescreenImagesDao.getRemoteKeys(id = id)
+        return withContext(Dispatchers.IO) {  // ✅ Move DB query to IO thread
+            state.anchorPosition?.let { position ->
+                state.closestItemToPosition(position)?.id?.let { id ->
+                    homescreenImagesDao.getRemoteKeys(id = id)
+                }
             }
         }
     }
@@ -126,18 +132,21 @@ class HomescreenRemoteMediator(
     private suspend fun getRemoteKeyForFirstItem(
         state: PagingState<Int, HomescreenImageEntity>
     ): UnsplashRemoteKeys? {
-        return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
-            ?.let { unsplashImage ->
+        return withContext(Dispatchers.IO) {  // ✅ Move DB query to IO thread
+            state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let { unsplashImage ->
                 homescreenImagesDao.getRemoteKeys(id = unsplashImage.id)
             }
+        }
     }
 
     private suspend fun getRemoteKeyForLastItem(
         state: PagingState<Int, HomescreenImageEntity>
     ): UnsplashRemoteKeys? {
-        return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
-            ?.let { unsplashImage ->
+        return withContext(Dispatchers.IO) {  // ✅ Move DB query to IO thread
+            state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let { unsplashImage ->
                 homescreenImagesDao.getRemoteKeys(id = unsplashImage.id)
             }
+        }
     }
+
 }

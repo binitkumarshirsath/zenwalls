@@ -16,7 +16,7 @@ import com.binit.zenwalls.data.local.entities.UnsplashRemoteKeys
         UnsplashRemoteKeys::class,
     ],
     exportSchema = false,
-    version = 1
+    version = 2
 )
 abstract class ZenWallsDatabase : RoomDatabase() {
 

@@ -3,6 +3,7 @@ package com.binit.zenwalls.ui.screens.wallpaper_list
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.binit.zenwalls.domain.NetworkErrorToMessageMapper
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.domain.networkUtil.onError
@@ -30,18 +31,25 @@ class HomeScreenViewModel(
     private val _images = MutableStateFlow<List<UnsplashImage>>(emptyList())
     val images = _images.asStateFlow()
 
+    val paginatedImage = repository.getFeedImagesPaging()
+        .catch { exception ->
+            Log.e(TAG, "Paging error: ${exception.message}")
+        }
+        .cachedIn(viewModelScope) // ✅ Ensures pagination survives configuration changes
+
+
     private val _snackBarEvent = MutableSharedFlow<SnackBarEvent>()
     val snackBarEvent = _snackBarEvent.asSharedFlow()
 
     val favouriteImageIds: StateFlow<List<String>> = repository.getFavouritesImageIds()
-        .catch { exception->
+        .catch { exception ->
             Log.e(TAG, "Error fetching favourite images: ${exception.message}")
         }
         .stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptyList()
-    )
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
 
     init {

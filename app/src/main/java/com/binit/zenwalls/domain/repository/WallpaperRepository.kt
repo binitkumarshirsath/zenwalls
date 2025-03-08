@@ -12,6 +12,8 @@ interface WallpaperRepository {
         perPage:Int=10,
     ): Result<List<UnsplashImage>, NetworkError>
 
+    fun getFeedImagesPaging():Flow<PagingData<UnsplashImage>>
+
     suspend fun getImage(imageId: String): Result<UnsplashImage, NetworkError>
     suspend fun searchImage(
         query: String,
