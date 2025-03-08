@@ -24,6 +24,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.binit.zenwalls.domain.model.UnsplashImage
@@ -50,6 +51,7 @@ fun SearchScreen(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
+    val favouritedImageIds by  searchScreenViewModel.favouriteImageIds.collectAsStateWithLifecycle()
     val query by searchScreenViewModel.query.collectAsState()
     var showHints by remember { mutableStateOf(true) }
     val images = searchScreenViewModel.images.collectAsLazyPagingItems()
@@ -123,15 +125,15 @@ fun SearchScreen(
                     images[it]?.let { it1 ->
                         ImageContainer(
                             modifier,
-                            onToggleFavouriteStatus = {
-
+                            onToggleFavouriteStatus = {unsplashimage->
+                                searchScreenViewModel.toggleFavouriteImage(unsplashimage)
                             },
                             onPreviewImageClick = { unsplashimage ->
                                 Log.d(TAG, "onPreviewImageClick Ran")
                                 isPreviewVisible.value = true
                                 previewImage.value = unsplashimage
                             },
-                            favouritedImageIds = emptyList(),
+                            favouritedImageIds =favouritedImageIds ,
                             onPreviewImageEnd = {
                                 Log.d(TAG, "onPreviewImageClick End")
                                 isPreviewVisible.value = false

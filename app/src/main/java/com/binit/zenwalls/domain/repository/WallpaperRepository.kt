@@ -19,4 +19,6 @@ interface WallpaperRepository {
     suspend fun toggleFavouriteStatus(image:UnsplashImage)
 
     fun getFavouritesImageIds():Flow<List<String>>
+
+    fun getAllFavouritesImages():Flow<PagingData<UnsplashImage>>
 }

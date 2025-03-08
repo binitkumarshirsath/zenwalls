@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.map
 import com.binit.zenwalls.data.local.dao.FavouriteImagesDao
 import com.binit.zenwalls.data.mappers.toFavouriteImageEntity
 import com.binit.zenwalls.data.mappers.toUnsplashImage
@@ -54,7 +55,7 @@ class WallpaperRepositoryImpl(
         page: Int,
         perPage: Int
     ): Result<List<UnsplashImage>, NetworkError> {
-        Log.d(TAG,"🔍 Searching for: $query , page: $page, perPage: $perPage")
+        Log.d(TAG, "🔍 Searching for: $query , page: $page, perPage: $perPage")
         return safeCall<UnsplashImagesSearchResult> {
             httpClient.get(urlString = constructUrl("/search/photos?query=$query")) {
                 parameter(key = "page", value = page)
@@ -75,7 +76,7 @@ class WallpaperRepositoryImpl(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                Log.d(TAG,"this $this")
+                Log.d(TAG, "this $this")
                 SearchPagingSource(query, this)
             }
         ).flow
@@ -85,18 +86,33 @@ class WallpaperRepositoryImpl(
         val isFavourite = favouriteImagesDao.isImageFavourite(image.id)
         if (isFavourite) {
             favouriteImagesDao.deleteFavouriteImage(image.toFavouriteImageEntity())
-            Log.d(TAG,"Deleted image from db")
+            Log.d(TAG, "Deleted image from db")
         } else {
             favouriteImagesDao.insertFavouriteImage(image.toFavouriteImageEntity())
-            Log.d(TAG,"Upsert image to db")
+            Log.d(TAG, "Upsert image to db")
         }
     }
 
     override fun getFavouritesImageIds(): Flow<List<String>> {
-        return favouriteImagesDao.getAllFavouriteImages().map {
-            it.map { favouriteImageEntity ->
-                favouriteImageEntity.id
+        return favouriteImagesDao.getAllFavouriteImageIds()
+    }
+
+    override fun getAllFavouritesImages(): Flow<PagingData<UnsplashImage>> {
+        return Pager(
+            config = PagingConfig(
+                initialLoadSize = 10,
+                pageSize = 10
+            ),
+            pagingSourceFactory = {
+                favouriteImagesDao.getAllFavouriteImages()
             }
-        }
+        ).flow
+            .map { pagingData ->
+                pagingData.map {
+                    it.toUnsplashImage()
+                }
+            }
     }
 }
+
+

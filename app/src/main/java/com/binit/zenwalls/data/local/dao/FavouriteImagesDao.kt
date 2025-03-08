@@ -1,5 +1,6 @@
 package com.binit.zenwalls.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface FavouriteImagesDao {
 
     @Query("Select * from favourite_images")
-    fun getAllFavouriteImages():Flow<List<FavouriteImageEntity>>
+    fun getAllFavouriteImages():PagingSource<Int,FavouriteImageEntity>
 
     @Upsert
     suspend fun insertFavouriteImage(image: FavouriteImageEntity)

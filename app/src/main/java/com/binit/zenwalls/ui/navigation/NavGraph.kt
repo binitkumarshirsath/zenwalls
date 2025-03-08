@@ -87,7 +87,7 @@ fun NavGraph(
                 snackbarHostState = snackbarHostState,
                 scrollBehavior = scrollBehavior,
                 favouriteScreenViewModel = favouriteScreenViewModel,
-                onImageClick = {  },
+                onImageClick = {   navController.navigate(Routes.WallpaperScreen(it))},
                 modifier = Modifier
             )
         }

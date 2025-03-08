@@ -1,10 +1,11 @@
 package com.binit.zenwalls.ui.screens.wallpaper_list.components
 
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -26,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -56,7 +60,10 @@ fun ImageContainer(
     onImageClick: (imageId: String) -> Unit = {},
 ) {
     var isLoading by remember { mutableStateOf(true) }
+    var isAnimating by remember { mutableStateOf(false) }
+    val isFavourite = favouritedImageIds.contains(image.id)
     val coroutineScope = rememberCoroutineScope()
+
     val aspectRatio by remember {
         derivedStateOf { (image.width?.toFloat() ?: 1f) / (image.height?.toFloat() ?: 1f) }
     }
@@ -72,6 +79,12 @@ fun ImageContainer(
         0.1f to Primary.copy(alpha = 0.2f),
         0.4f to Primary.copy(alpha = 0.6f),
         0.1f to Primary.copy(alpha = 0.8f)
+    )
+
+    val scale by animateFloatAsState(
+        targetValue = if (isAnimating) 1.5f else 1f,
+        animationSpec = tween(durationMillis = 200),
+        label = "Scale Animation"
     )
 
     Column {
@@ -120,25 +133,31 @@ fun ImageContainer(
             ) {
                 Box(
                     modifier
-                        .size(25.dp)
+                        .size(30.dp)
                         .padding(end = 8.dp, bottom = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    val isFavourite = favouritedImageIds.contains(image.id)
-                    Icon(
-                        Icons.Default.Favorite,
-                        contentDescription = "favourite_img",
-                        modifier
-                            .size(20.dp)
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                onToggleFavouriteStatus.invoke(image)
-                            },
-                        tint = if (isFavourite) Color.Red else Color.White
-
-                    )
+                    IconButton(
+                        onClick = {
+                            onToggleFavouriteStatus.invoke(image)
+                            isAnimating = true
+                            coroutineScope.launch {
+                                delay(400) // Delay for effect
+                                isAnimating = false
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .align(Alignment.BottomEnd)
+                            .scale(scale)
+                    ) {
+                        Icon(
+                            imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Favourite",
+                            modifier = Modifier.size(20.dp),
+                            tint = if (isFavourite) Color.Red else Color.White,
+                        )
+                    }
                 }
 
             }
