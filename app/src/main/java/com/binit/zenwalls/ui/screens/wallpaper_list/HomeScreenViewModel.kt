@@ -5,15 +5,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.binit.zenwalls.domain.NetworkErrorToMessageMapper
 import com.binit.zenwalls.domain.model.UnsplashImage
-import com.binit.zenwalls.domain.networkUtil.NetworkError
 import com.binit.zenwalls.domain.networkUtil.onError
 import com.binit.zenwalls.domain.networkUtil.onSuccess
 import com.binit.zenwalls.domain.repository.WallpaperRepository
 import com.binit.zenwalls.domain.util.SnackBarEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val TAG = "HomeScreenViewModel"
@@ -27,6 +32,17 @@ class HomeScreenViewModel(
 
     private val _snackBarEvent = MutableSharedFlow<SnackBarEvent>()
     val snackBarEvent = _snackBarEvent.asSharedFlow()
+
+    val favouriteImageIds: StateFlow<List<String>> = repository.getFavouritesImageIds()
+        .catch { exception->
+            Log.e(TAG, "Error fetching favourite images: ${exception.message}")
+        }
+        .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
 
     init {
         fetchImages()
@@ -43,4 +59,12 @@ class HomeScreenViewModel(
             }
         }
     }
+
+    fun toggleFavouriteImage(image: UnsplashImage) {
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.toggleFavouriteStatus(image)
+        }
+    }
+
+
 }

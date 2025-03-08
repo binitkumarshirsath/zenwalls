@@ -1,9 +1,13 @@
 package com.binit.zenwalls.di
 
+import androidx.room.Room
+import com.binit.zenwalls.data.local.ZenWallsDatabase
+import com.binit.zenwalls.data.local.dao.FavouriteImagesDao
 import com.binit.zenwalls.data.network.HttpClientFactory
 import com.binit.zenwalls.data.repository.DownloadRepoImpl
 import com.binit.zenwalls.data.repository.NetworkConnectivityObserverImpl
 import com.binit.zenwalls.data.repository.WallpaperRepositoryImpl
+import com.binit.zenwalls.data.utils.Constants
 import com.binit.zenwalls.domain.repository.DownloadRepository
 import com.binit.zenwalls.domain.repository.NetworkConnectivityObserver
 import com.binit.zenwalls.domain.repository.WallpaperRepository
@@ -28,7 +32,7 @@ val appModule = module {
 
 
     single {
-        WallpaperRepositoryImpl(get())
+        WallpaperRepositoryImpl(get(),get())
     }.bind(WallpaperRepository::class)
 
     single {
@@ -51,4 +55,18 @@ val appModule = module {
     viewModelOf(::WallpaperScreenViewModel)
     viewModelOf(::SearchScreenViewModel)
     viewModelOf(::FavouriteScreenViewModel)
+
+
+
+    single<ZenWallsDatabase> {
+        Room.databaseBuilder(
+            get(),
+            ZenWallsDatabase::class.java,
+            Constants.DB_NAME,
+        ).build()
+    }
+
+    single<FavouriteImagesDao> {
+        get<ZenWallsDatabase>().favouriteImagesDao()
+    }
 }

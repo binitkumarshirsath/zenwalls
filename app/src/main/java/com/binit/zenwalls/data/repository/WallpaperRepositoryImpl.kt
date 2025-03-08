@@ -4,31 +4,30 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.binit.zenwalls.data.local.dao.FavouriteImagesDao
+import com.binit.zenwalls.data.mappers.toFavouriteImageEntity
 import com.binit.zenwalls.data.mappers.toUnsplashImage
 import com.binit.zenwalls.data.network.constructUrl
 import com.binit.zenwalls.data.network.safeCall
 import com.binit.zenwalls.data.paging.SearchPagingSource
 import com.binit.zenwalls.data.remote.dto.UnsplashImageDTO
 import com.binit.zenwalls.data.remote.dto.UnsplashImagesSearchResult
-import com.binit.zenwalls.domain.NetworkErrorToMessageMapper
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.domain.networkUtil.NetworkError
 import com.binit.zenwalls.domain.networkUtil.Result
 import com.binit.zenwalls.domain.networkUtil.map
-import com.binit.zenwalls.domain.networkUtil.onError
 import com.binit.zenwalls.domain.repository.WallpaperRepository
-import com.binit.zenwalls.domain.util.SnackBarEvent
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.map
 
 private const val TAG = "WallpaperRepositoryImpl"
 
 class WallpaperRepositoryImpl(
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
+    private val favouriteImagesDao: FavouriteImagesDao
 ) : WallpaperRepository {
 
 
@@ -82,4 +81,22 @@ class WallpaperRepositoryImpl(
         ).flow
     }
 
+    override suspend fun toggleFavouriteStatus(image: UnsplashImage) {
+        val isFavourite = favouriteImagesDao.isImageFavourite(image.id)
+        if (isFavourite) {
+            favouriteImagesDao.deleteFavouriteImage(image.toFavouriteImageEntity())
+            Log.d(TAG,"Deleted image from db")
+        } else {
+            favouriteImagesDao.insertFavouriteImage(image.toFavouriteImageEntity())
+            Log.d(TAG,"Upsert image to db")
+        }
+    }
+
+    override fun getFavouritesImageIds(): Flow<List<String>> {
+        return favouriteImagesDao.getAllFavouriteImages().map {
+            it.map { favouriteImageEntity ->
+                favouriteImageEntity.id
+            }
+        }
+    }
 }

@@ -1,7 +1,6 @@
 package com.binit.zenwalls.domain.repository
 
 import androidx.paging.PagingData
-import com.binit.zenwalls.data.remote.dto.UnsplashImagesSearchResult
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.domain.networkUtil.NetworkError
 import com.binit.zenwalls.domain.networkUtil.Result
@@ -16,4 +15,8 @@ interface WallpaperRepository {
         perPage: Int,
     ): Result<List<UnsplashImage>, NetworkError>
     fun searchImagesPaging(query:String): Flow<PagingData<UnsplashImage>>
+
+    suspend fun toggleFavouriteStatus(image:UnsplashImage)
+
+    fun getFavouritesImageIds():Flow<List<String>>
 }

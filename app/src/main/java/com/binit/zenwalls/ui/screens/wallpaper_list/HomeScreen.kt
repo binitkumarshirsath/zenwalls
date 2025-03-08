@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.ui.components.ImagePreview
@@ -51,6 +52,7 @@ fun HomeScreen(
     val isPreviewVisible = remember { mutableStateOf(false) }
     val previewImage = remember { mutableStateOf<UnsplashImage?>(null) }
     val images by viewModel.images.collectAsState()
+    val favouritedImageIds by  viewModel.favouriteImageIds.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()
     LaunchedEffect(viewModel.snackBarEvent) {
@@ -81,8 +83,12 @@ fun HomeScreen(
                     .fillMaxSize()
             ) {
                 items(images) {
-                    ImageContainer(
+                     ImageContainer(
                         modifier,
+                        onToggleFavouriteStatus ={unsplashImage->
+                            viewModel.toggleFavouriteImage(unsplashImage)
+                        },
+                        favouritedImageIds,
                         onPreviewImageClick = {
                             isPreviewVisible.value = true
                             previewImage.value = it
@@ -90,7 +96,9 @@ fun HomeScreen(
                         onPreviewImageEnd = {
                             isPreviewVisible.value = false
                             previewImage.value = null
-                        }, it, onImageClick
+                        },
+                        it,
+                        onImageClick
                     )
                 }
             }

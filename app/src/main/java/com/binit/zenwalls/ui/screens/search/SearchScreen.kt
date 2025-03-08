@@ -123,17 +123,22 @@ fun SearchScreen(
                     images[it]?.let { it1 ->
                         ImageContainer(
                             modifier,
+                            onToggleFavouriteStatus = {
+
+                            },
                             onPreviewImageClick = { unsplashimage ->
                                 Log.d(TAG, "onPreviewImageClick Ran")
                                 isPreviewVisible.value = true
                                 previewImage.value = unsplashimage
                             },
+                            favouritedImageIds = emptyList(),
                             onPreviewImageEnd = {
                                 Log.d(TAG, "onPreviewImageClick End")
                                 isPreviewVisible.value = false
                                 previewImage.value = null
                             },
-                            image = it1, onImageClick
+                            image = it1,
+                            onImageClick = onImageClick
                         )
                     }
                 }
