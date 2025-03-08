@@ -7,7 +7,11 @@ import com.binit.zenwalls.domain.networkUtil.Result
 import kotlinx.coroutines.flow.Flow
 
 interface WallpaperRepository {
-    suspend fun getFeedImages(): Result<List<UnsplashImage>, NetworkError>
+    suspend fun getFeedImages(
+        page:Int=1,
+        perPage:Int=10,
+    ): Result<List<UnsplashImage>, NetworkError>
+
     suspend fun getImage(imageId: String): Result<UnsplashImage, NetworkError>
     suspend fun searchImage(
         query: String,

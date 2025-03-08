@@ -5,7 +5,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.binit.zenwalls.domain.model.UnsplashImage
 import com.binit.zenwalls.domain.networkUtil.Result
-import com.binit.zenwalls.domain.networkUtil.onSuccess
 import com.binit.zenwalls.domain.repository.WallpaperRepository
 
 private const val TAG = "SearchPagingSource"
@@ -15,10 +14,15 @@ class SearchPagingSource(
     private val repo: WallpaperRepository
 ) : PagingSource<Int, UnsplashImage>() {
     override fun getRefreshKey(state: PagingState<Int, UnsplashImage>): Int? {
-        return state.anchorPosition
+        Log.d(TAG,"anchor: ${state.anchorPosition}")
+
+         return state.anchorPosition?.let {
+            state.closestPageToPosition(it)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(it)?.nextKey?.minus(1)
+        }
     }
 
-    private val STARTING_PAGE_INDEX = 1
+    private  val  STARTING_PAGE_INDEX = 1
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, UnsplashImage> {
         Log.d(TAG,"LoadParams: $params")
         val currentPage = params.key ?: STARTING_PAGE_INDEX
@@ -27,7 +31,7 @@ class SearchPagingSource(
         Log.d(TAG,"🔍 Loading page: $currentPage with size: $perPage")
 
         val result = repo.searchImage(query, currentPage, perPage)
-
+        Log.d(TAG,"Result: $result")
         return when (result) {
             is Result.Error -> {
                 LoadResult.Error(

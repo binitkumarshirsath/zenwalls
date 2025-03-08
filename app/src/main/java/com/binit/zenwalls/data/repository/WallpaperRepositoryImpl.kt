@@ -32,9 +32,15 @@ class WallpaperRepositoryImpl(
 ) : WallpaperRepository {
 
 
-    override suspend fun getFeedImages(): Result<List<UnsplashImage>, NetworkError> {
+    override suspend fun getFeedImages(
+        page: Int,
+        perPage: Int
+    ): Result<List<UnsplashImage>, NetworkError> {
         return safeCall<List<UnsplashImageDTO>> {
-            httpClient.get(urlString = constructUrl("/photos"))
+            httpClient.get(urlString = constructUrl("/photos")) {
+                parameter(key = "page", value = page)
+                parameter(key = "per_page", value = perPage)
+            }
         }.map {
             it.map { unsplashImageDTO ->
                 unsplashImageDTO.toUnsplashImage()
