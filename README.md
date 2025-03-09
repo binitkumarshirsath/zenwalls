@@ -22,23 +22,22 @@ ZenWalls is a sleek wallpaper app built using **Jetpack Compose** that offers a 
 - **ViewModel** - Manages UI-related data in a lifecycle-conscious way.  
 - **Jetpack Navigation** - For smooth screen transitions.  
 
-## 📸 Screenshots
+### 📸 Screenshots
 
 | Home Screen | Search Screen | Favorites Screen |
 |--------------|----------------|------------------|
-| ![Home](![ss1](https://github.com/user-attachments/assets/042e97bd-3348-4f84-9d10-beb5195041e7)
-) | ![Search](![ss6](https://github.com/user-attachments/assets/9363def7-7ae8-4faa-9cfa-586b60b0832a)(![ss7](https://github.com/user-attachments/assets/69ad783d-4a64-4412-b950-1841bdbe2351)
-
-) | ![Favorites](![ss8](https://github.com/user-attachments/assets/96bca474-4fd6-40af-a49a-44e5f0ffd0df)
-) |
+| ![ss1](https://github.com/user-attachments/assets/042e97bd-3348-4f84-9d10-beb5195041e7) | ![ss6](https://github.com/user-attachments/assets/9363def7-7ae8-4faa-9cfa-586b60b0832a) | ![ss8](https://github.com/user-attachments/assets/96bca474-4fd6-40af-a49a-44e5f0ffd0df) |
 
 | Photographer Profile | Wallpaper Zoom | Download Options |
 |-----------------------|------------------|-------------------|
-| ![Profile](![ss5](https://github.com/user-attachments/assets/ab43ceb5-9215-4fcf-ba71-77ad0e090beb)
-) | ![Zoom](![ss2](https://github.com/user-attachments/assets/8b7d2d57-7e5a-468e-a20d-d6bb1b86782c)
-) | ![Download](![ss4](https://github.com/user-attachments/assets/457d1872-917f-4d72-ae14-50f1e658fdbf)
-) |
+| ![ss5](https://github.com/user-attachments/assets/ab43ceb5-9215-4fcf-ba71-77ad0e090beb) | ![ss2](https://github.com/user-attachments/assets/8b7d2d57-7e5a-468e-a20d-d6bb1b86782c) | ![ss4](https://github.com/user-attachments/assets/457d1872-917f-4d72-ae14-50f1e658fdbf) |
 
+### Key Fixes  
+✅ Removed extra parentheses around image links.  
+✅ Ensured each cell in the table has one image only.  
+✅ Corrected syntax to follow GitHub Markdown standards.  
+
+This version should display the images correctly. Let me know if you’d like to refine anything else! 🚀
 ## 🏗️ Setup Instructions
 
 1. **Clone the Repository**  
